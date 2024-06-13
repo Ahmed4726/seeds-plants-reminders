@@ -15,18 +15,20 @@ class CreateCycletasksTable extends Migration
             $table->integer('days_from_start');
             $table->boolean('reminder')->default(false);
             $table->timestamps();
+
+            // $table->foreign('cycle_id')->references('id')->on('cycles')->onDelete('cascade');
         });
 
         Schema::create('cycletask_notes', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('cycletask_id')->constrained('cycletasks')->onDelete('cascade');
+            $table->foreignId('cycle_task_id')->constrained('cycletasks')->onDelete('cascade');
             $table->text('note');
             $table->timestamps();
         });
 
         Schema::create('cycletask_tags', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('cycletask_id')->constrained('cycletasks')->onDelete('cascade');
+            $table->foreignId('cycle_task_id')->constrained('cycletasks')->onDelete('cascade');
             $table->string('tag');
             $table->timestamps();
         });

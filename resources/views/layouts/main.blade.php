@@ -43,11 +43,15 @@
             padding: 1rem;
             border-bottom: 1px solid #495057;
         }
+
+        .sidebar .navbar-brand:hover{
+            color: #ffffff;
+        }
         .sidebar .nav-link {
             color: #ffffff;
         }
         .sidebar .nav-link:hover {
-            background-color: #495057;
+            background-color: #49505717;
         }
         .sidebar .nav-item {
             margin-bottom: 10px;
@@ -84,8 +88,8 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/templates/create">
-                        <i class="fas fa-file-alt"></i> New Template
+                    <a class="nav-link" href="/template">
+                        <i class="fas fa-file-alt"></i> Templates
                     </a>
                 </li>
                 <li class="nav-item">
@@ -93,14 +97,26 @@
                         <i class="fas fa-tags"></i> Tag
                     </a>
                     <ul class="nav flex-column ml-3">
-                        <!-- Dropdown items will be dynamically loaded here -->
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Task 1</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Task 2</a>
-                        </li>
+                        @php
+                            $uniqueTags = [];
+                        @endphp
+
+                        @foreach(auth()->user()->cycles as $cycle)
+                            @foreach($cycle->tasks as $task)
+                                @foreach($task->tags as $tag)
+                                    @if(!in_array($tag->tag, $uniqueTags))
+                                        @php
+                                            $uniqueTags[] = $tag->tag;
+                                        @endphp
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="{{ route('tags.show', $tag->tag) }}">{{ $tag->tag }}</a>
+                                        </li>
+                                    @endif
+                                @endforeach
+                            @endforeach
+                        @endforeach
                     </ul>
+
                 </li>
                 {{-- <li class="nav-item">
                     <a class="nav-link" href="#">

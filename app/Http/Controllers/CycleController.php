@@ -30,7 +30,8 @@ class CycleController extends Controller
 
     public function createNoTemplate()
     {
-        return view('cycles.createNoTemplate');
+        $cycleData = session('cycle_data', []);
+        return view('cycles.createNoTemplate', compact('cycleData'));
     }
 
     public function store(Request $request)
@@ -94,6 +95,80 @@ class CycleController extends Controller
     {
         $cycles = auth()->user()->cycles()->with('tasks')->get();
         return view('cycles.calendar', compact('cycles'));
+    }
+
+    public function showCyclesByTag($tagId)
+    {
+        $cycles = Cycle::whereHas('cycletask_tags.tags', function ($query) use ($tagId) {
+            $query->where('id', $tagId);
+        })->with('tasks.tags')->get();
+
+        $tag = CycleTaskTag::find($tagId);
+
+        return view('cycles.cyclesByTag', compact('cycles', 'tag'));
+    }
+
+    public function edit($id)
+    {
+        $cycle = Cycle::with('tasks.notes', 'tasks.tags')->findOrFail($id);
+        return view('cycles.edit', compact('cycle'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'cycle_name' => 'required|string|max:255',
+            'start_date' => 'required|date',
+            'tasks' => 'required|array',
+            'tasks.*.name' => 'required|string|max:255',
+            'tasks.*.days_from_start' => 'required|integer',
+            'tasks.*.reminder' => 'sometimes',
+            'tasks.*.notes' => 'sometimes|array',
+            'tasks.*.tags' => 'sometimes|array',
+        ]);
+
+        $cycle = Cycle::findOrFail($id);
+        $cycle->update([
+            'name' => $request->cycle_name,
+            'start_date' => $request->start_date,
+        ]);
+
+        $cycle->tasks()->delete();
+
+        foreach ($request->tasks as $taskData) {
+            $task = $cycle->tasks()->create([
+                'name' => $taskData['name'],
+                'days_from_start' => $taskData['days_from_start'],
+                'reminder' => $taskData['reminder'] ?? 0,
+            ]);
+
+            if (isset($taskData['notes'])) {
+                foreach ($taskData['notes'] as $note) {
+                    $task->notes()->create(['note' => $note]);
+                }
+            }
+
+            if (isset($taskData['tags'])) {
+                foreach ($taskData['tags'] as $tag) {
+                    $task->tags()->create(['tag' => $tag]);
+                }
+            }
+        }
+
+        return redirect()->route('home')->with('success', 'Cycle updated successfully');
+    }
+
+    public function destroy($id)
+    {
+        $cycle = Cycle::findOrFail($id);
+        $cycle->tasks()->each(function ($task) {
+            $task->notes()->delete();
+            $task->tags()->delete();
+            $task->delete();
+        });
+        $cycle->delete();
+
+        return redirect()->route('home')->with('success', 'Cycle deleted successfully');
     }
 
 }

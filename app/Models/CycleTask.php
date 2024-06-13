@@ -10,7 +10,7 @@ class CycleTask extends Model
     use HasFactory;
 
     protected $table = 'cycletasks';
-    
+
     protected $fillable = [
         'name',
         'days_from_start',
@@ -19,7 +19,7 @@ class CycleTask extends Model
 
     public function cycle()
     {
-        return $this->belongsTo(Cycle::class);
+        return $this->belongsTo(Cycle::class, 'cycle_id');
     }
 
     public function notes()

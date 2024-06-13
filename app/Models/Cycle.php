@@ -22,6 +22,6 @@ class Cycle extends Model
 
     public function tasks()
     {
-        return $this->hasMany(CycleTask::class);
+        return $this->hasMany(CycleTask::class, 'cycle_id');
     }
 }

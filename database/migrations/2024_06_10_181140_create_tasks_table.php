@@ -9,8 +9,23 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
+
+    //     public function up()
+    // {
+
+    // }
     public function up()
     {
+        
+        Schema::create('templates', function (Blueprint $table) {
+            $table->id();
+            $table->string('user_id');
+            $table->dateTime('start_from_date');
+            $table->string('name');
+            $table->timestamps();
+        });
+
+
         Schema::create('tasks', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('template_id');
