@@ -93,8 +93,8 @@ class TemplateController extends Controller
             'tasks.*.name' => 'required|string|max:255',
             'tasks.*.days_from_start' => 'required|integer',
             'tasks.*.reminder' => 'sometimes',
-            'tasks.*.notes' => 'sometimes|array',
-            'tasks.*.tags' => 'sometimes|array',
+            'tasks.*.notes' => 'required|sometimes|array',
+            'tasks.*.tags' => 'required|sometimes|array',
         ]);
 
         if ($validated->fails()) {

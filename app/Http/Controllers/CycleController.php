@@ -31,7 +31,9 @@ class CycleController extends Controller
     public function createNoTemplate()
     {
         $cycleData = session('cycle_data', []);
+        // session('cycle_data')->flush();
         return view('cycles.createNoTemplate', compact('cycleData'));
+
     }
 
     public function store(Request $request)
@@ -72,7 +74,7 @@ class CycleController extends Controller
             $cycleTask = $cycle->tasks()->create([
                 'name' => $taskData['name'],
                 'days_from_start' => $taskData['days_from_start'],
-                'reminder' => $taskData['reminder'] ?? 0,
+                'reminder' => isset($taskData['reminder']) ?? 0 ,
             ]);
 
             if (isset($taskData['notes'])) {
@@ -139,7 +141,7 @@ class CycleController extends Controller
             $task = $cycle->tasks()->create([
                 'name' => $taskData['name'],
                 'days_from_start' => $taskData['days_from_start'],
-                'reminder' => $taskData['reminder'] ?? 0,
+                'reminder' => isset($taskData['reminder']) ?? 0,
             ]);
 
             if (isset($taskData['notes'])) {

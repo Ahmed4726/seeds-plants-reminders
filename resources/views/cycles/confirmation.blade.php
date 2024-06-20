@@ -22,6 +22,7 @@
 
     <h2 class="mb-3">Tasks</h2>
     @foreach ($cycleData['tasks'] as $task)
+    {{-- @dd($task) --}}
         <div class="card mb-3">
             <div class="card-body">
                 <div class="form-group">
@@ -34,7 +35,7 @@
                 </div>
                 <div class="form-group">
                     <label class="font-weight-bold">Reminder:</label>
-                    <p>{{ $task['reminder'] ? 'Yes' : 'No' }}</p>
+                    <p>{{ isset($task['reminder']) ? 'Yes' : 'No' }}</p>
                 </div>
                 @if (isset($task['notes']))
                     <div class="form-group">

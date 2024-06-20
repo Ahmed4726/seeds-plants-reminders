@@ -117,7 +117,7 @@
 
         noteField.innerHTML = `
             <label for="note-${noteId}">Note</label>
-            <input type="text" class="form-control" id="note-${noteId}" name="tasks[${taskId}][notes][]">
+            <input type="text" class="form-control" id="note-${noteId}" name="tasks[${taskId}][notes][]" required>
         `;
 
         notesContainer.appendChild(noteField);
@@ -133,7 +133,7 @@
 
         tagField.innerHTML = `
             <label for="tag-${tagId}">Tag</label>
-            <input type="text" class="form-control" id="tag-${tagId}" name="tasks[${taskId}][tags][]">
+            <input type="text" class="form-control" id="tag-${tagId}" name="tasks[${taskId}][tags][]" required>
         `;
 
         tagsContainer.appendChild(tagField);
