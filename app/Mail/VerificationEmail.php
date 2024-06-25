@@ -13,6 +13,7 @@ class VerificationEmail extends Mailable
     use Queueable, SerializesModels;
 
     public $user;
+    public $appName;
 
     /**
      * Create a new message instance.
@@ -22,6 +23,7 @@ class VerificationEmail extends Mailable
     public function __construct(User $user)
     {
         $this->user = $user;
+        $this->appName = config('app.name');
     }
 
     /**
@@ -31,10 +33,25 @@ class VerificationEmail extends Mailable
      */
     public function build()
     {
-        return $this->view('emails.verification')
+        return $this->subject('Verify your email address')
+                    ->view('emails.verification')
                     ->with([
                         'name' => $this->user->name,
-                        'verificationUrl' => route('verification.verify', $this->user->id),
+                        'verificationUrl' => $this->generateVerificationUrl(),
+                        'appName' => $this->appName,
                     ]);
+    }
+
+    /**
+     * Generate the verification URL for the user.
+     *
+     * @return string
+     */
+    protected function generateVerificationUrl()
+    {
+        return route('verify.email', [
+            'id' => $this->user->id,
+            'hash' => sha1($this->user->getEmailForVerification()),
+        ]);
     }
 }

@@ -54,7 +54,7 @@
             </div>
             <div class="form-group">
 
-                <input type="checkbox" id="reminder-${taskId}" name="tasks[${taskId}][reminder]" value="1">
+                <input type="checkbox" id="reminder-${taskId}" name="tasks[${taskId}][reminder]" value="1" checked>
                 <label for="reminder-${taskId}">Reminder</label>
             </div>
             <div class="form-group">

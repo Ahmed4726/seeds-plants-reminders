@@ -7,23 +7,13 @@ use App\Mail\VerificationEmail;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 class RegisterController extends Controller
 {
-    /*
-    |--------------------------------------------------------------------------
-    | Register Controller
-    |--------------------------------------------------------------------------
-    |
-    | This controller handles the registration of new users as well as their
-    | validation and creation. By default this controller uses a trait to
-    | provide this functionality without requiring any additional code.
-    |
-    */
-
     use RegistersUsers;
 
     /**
@@ -31,7 +21,7 @@ class RegisterController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/';
+    protected $redirectTo = '/verify-email';
 
     /**
      * Create a new controller instance.
@@ -77,4 +67,23 @@ class RegisterController extends Controller
 
         return $user;
     }
+
+       /**
+     * The user has been registered.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  mixed  $user
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    protected function registered(Request $request, $user)
+    {
+
+        Mail::to($user->email)->send(new VerificationEmail($user));
+        // $user->sendEmailVerificationNotification();
+
+        $this->guard()->logout();
+
+        return redirect($this->redirectPath())->with('success', 'You have registered successfully! Please verify your email to log in.');
+    }
+
 }
