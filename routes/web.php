@@ -6,8 +6,18 @@ use App\Http\Controllers\FullCalenderController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\TemplateController;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\ProfileController;
+
+// use App\Http\Controllers\VerificationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,9 +32,33 @@ use Illuminate\Support\Facades\Route;
 
 // Route::get('/', [HomeController::class, 'index'])->name('home')->middleware('auth');
 
-Auth::routes();
+// Route to handle email verification without requiring the user to be logged in
+Route::get('/verify-email/{id}/{hash}', [VerificationController::class, 'verifyEmail'])->name('verify.email');
+
+Route::get('/verify-email', function () {
+    return view('auth.verify-email');
+})->name('verify-email');
+
+// Login routes
+Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [LoginController::class, 'login']);
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
+// Registration routes
+Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
+Route::post('/register', [RegisterController::class, 'register']);
+
+// Password reset routes
+Route::get('/password/reset', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
+Route::post('/password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
+Route::get('/password/reset/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
+Route::post('/password/reset', [ResetPasswordController::class, 'reset'])->name('password.update');
+
+// Custom email verification route
+Route::get('/verify-email/{id}/{hash}', [VerificationController::class, 'verifyEmail'])->name('verify.email');
 
 Route::middleware(['auth'])->group(function () {
+
     Route::get('/', [HomeController::class, 'index'])->name('home');
     Route::get('/template', [TemplateController::class, 'index'])->name('templates.index');
 
@@ -33,6 +67,12 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/templates/delete/{id}', [TemplateController::class, 'destroy'])->name('templates.delete');
     Route::get('/templates/edit/{id}', [TemplateController::class, 'edit'])->name('templates.edit');
     Route::put('/templates/update/{id}', [TemplateController::class, 'update'])->name('templates.update');
+
+    // Profile
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::post('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.updatePassword');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
 
     Route::get('/cycles/create', [CycleController::class, 'chooseTemplate'])->name('cycles.chooseTemplate');

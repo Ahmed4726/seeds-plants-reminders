@@ -31,7 +31,7 @@
             top: 0;
             left: 0;
             width: 250px;
-            background-color: #343a40;
+            background-color: #ff0000;
             padding-top: 20px;
             display: flex;
             flex-direction: column;
@@ -60,6 +60,24 @@
             margin-left: 250px; /* Adjust this value based on the width of the sidebar */
             padding: 20px;
         }
+        .tags-list {
+            list-style-type: none; /* Remove default list styles */
+            padding-left: 0; /* Remove default list padding */
+        }
+        .tags-list .tag-item {
+            color: #ffffff; /* Set text color to white */
+            margin-bottom: 5px;
+        }
+        .tags-dropdown {
+            display: none; /* Hide tags dropdown initially */
+        }
+        .tags-dropdown.show {
+            display: block; /* Show tags dropdown when .show class is added */
+        }
+        .custom-red-color {
+    color: red; /* Changes text color to red */
+}
+
         @media (max-width: 768px) {
             .sidebar {
                 width: 100%;
@@ -69,6 +87,10 @@
             .main-content {
                 margin-left: 0;
             }
+            .custom-red-text {
+    color: red; /* Changes text color to red */
+}
+
         }
     </style>
 
@@ -93,12 +115,12 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">
-                        <i class="fas fa-tags"></i> Tag
+                    <a class="nav-link dropdown-toggle" href="#" id="tagsDropdownToggle" aria-haspopup="true" aria-expanded="false" onclick="toggleTagsDropdown()">
+                        <i class="fas fa-tags"></i> Tags
                     </a>
-                    <ul class="nav flex-column ml-3">
+                    <ul class="tags-list d-none" id="tagsList"> <!-- Add the "d-none" class here to hide it by default -->
                         @php
-                            $uniqueTags = [];
+                        $uniqueTags = [];
                         @endphp
 
                         @foreach(auth()->user()->cycles as $cycle)
@@ -106,17 +128,16 @@
                                 @foreach($task->tags as $tag)
                                     @if(!in_array($tag->tag, $uniqueTags))
                                         @php
-                                            $uniqueTags[] = $tag->tag;
+                                        $uniqueTags[] = $tag->tag;
                                         @endphp
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="{{ route('tags.show', $tag->tag) }}">{{ $tag->tag }}</a>
+                                        <li class="tag-item mx-5">
+                                            <a class="tag-item" href="{{ route('tags.show', $tag->tag) }}">{{ $tag->tag }}</a>
                                         </li>
                                     @endif
                                 @endforeach
                             @endforeach
                         @endforeach
                     </ul>
-
                 </li>
                 {{-- <li class="nav-item">
                     <a class="nav-link" href="#">
@@ -140,12 +161,12 @@
 
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
                         <!-- Left Side Of Navbar -->
-                        <ul class="navbar-nav me-auto">
+                        <ul class="navbar-nav me-auto custom-red-color">
 
                         </ul>
 
                         <!-- Right Side Of Navbar -->
-                        <ul class="navbar-nav ms-auto">
+                        <ul class="navbar-nav ms-auto custom-red-color">
                             <!-- Authentication Links -->
                             @guest
                                 @if (Route::has('login'))
@@ -166,6 +187,8 @@
                                     </a>
 
                                     <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                        <a class="dropdown-item" href="{{ route('profile.edit') }}">Profile
+                                        </a>
                                         <a class="dropdown-item" href="{{ route('logout') }}"
                                            onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
@@ -175,6 +198,7 @@
                                         <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                                             @csrf
                                         </form>
+
                                     </div>
                                 </li>
                             @endguest
@@ -188,6 +212,14 @@
             </main>
         </div>
     </div>
+    <script>
+        // Function to handle dropdown toggle
+           // Function to toggle tags dropdown visibility
+           function toggleTagsDropdown() {
+        var tagsDropdown = document.getElementById('tagsList');
+        tagsDropdown.classList.toggle('d-none'); // Toggle the 'd-none' class instead of 'tags-dropdown'
+    }
 
+    </script>
 </body>
 </html>
