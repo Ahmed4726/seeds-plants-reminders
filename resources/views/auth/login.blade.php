@@ -6,17 +6,17 @@
         <div class="col-md-8">
             <div class="card">
                 @if(session('success'))
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        {{ session('success') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-@endif
-@if(session('error'))
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        {{ session('error') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-@endif
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        {{ session('success') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                @endif
+                @if(session('error'))
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        {{ session('error') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                @endif
                 <div class="card-header">{{ __('Login') }}</div>
 
                 <div class="card-body">
@@ -79,6 +79,17 @@
                     </form>
                 </div>
             </div>
+
+        </div>
+        <div class="col-md-2 text-md-start align-self-start">
+            <br>
+            <br>
+            <p>New here? Sign up for an account by clicking the register button on top</p>
+            {{-- <p></p> --}}
+        </div>
+        <div class="text-center mt-3">
+            <h3>Login to your Account!</h3>
+            <p>Planning made Easy</p>
         </div>
     </div>
 </div>
